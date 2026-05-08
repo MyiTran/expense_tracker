@@ -1,0 +1,55 @@
+<% content_for :title, "Quản lý chi tiêu" %>
+
+<div class="max-w-4xl mx-auto pb-20">
+  <%# Tbáo thành công %>
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block animate-bounce" id="notice"><%= notice %></p>
+  <% end %>
+
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="font-bold text-4xl text-gray-900">Chi tiêu của tôi</h1>
+      <p class="text-gray-500 mt-2">Chào Trà My, hôm nay bạn đã chi gì chưa?</p>
+    </div>
+    <%= link_to "+ Thêm mới", new_transaction_path, class: "rounded-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-200 transition-all" %>
+  </div>
+
+  <%# Tổng chi tiêu %>
+  <div class="mb-10 bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl">
+    <p class="text-blue-100 text-sm uppercase tracking-wider font-semibold">Tổng chi tiêu đã ghi nhận</p>
+    <h2 class="text-4xl font-black mt-1">
+      <%= number_to_currency(@transactions.sum(:amount), unit: "₫", precision: 0, format: "%n %u") %>
+    </h2>
+  </div>
+
+  <%# BIỂU ĐỒ %>
+  <% if @transactions.any? %>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-12">
+      <h2 class="text-xl font-bold mb-6 text-gray-800">Phân tích chi tiêu</h2>
+      <div class="h-64">
+        <%= pie_chart @transactions.group(:category).sum(:amount), 
+                      prefix: "đ", 
+                      thousands: ".", 
+                      donut: true,
+                      legend: "bottom",
+                      library: { animation: { duration: 1000 } } %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# DANH SÁCH GIAO DỊCH %>
+  <div id="transactions" class="space-y-4">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Lịch sử giao dịch</h2>
+    <% if @transactions.any? %>
+      <div class="grid gap-4">
+        <% @transactions.order(transaction_date: :desc).each do |transaction| %>
+          <%= render transaction %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+        <p class="text-gray-400 font-medium">Chưa có giao dịch nào. Nhấn "Thêm mới" để bắt đầu nhé!</p>
+      </div>
+    <% end %>
+  </div>
+</div>
