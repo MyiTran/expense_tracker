@@ -68,3 +68,4 @@ group :test do
 end
 gem "chartkick"
 gem "groupdate"
+gem "devise"

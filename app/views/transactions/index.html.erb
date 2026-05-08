@@ -1,55 +1,61 @@
-<% content_for :title, "Quản lý chi tiêu" %>
-
-<div class="max-w-4xl mx-auto pb-20">
-  <%# Tbáo thành công %>
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block animate-bounce" id="notice"><%= notice %></p>
-  <% end %>
-
-  <div class="flex justify-between items-center mb-8">
+<div class="max-w-4xl mx-auto px-4 pb-20">
+  <%# Header với nút Đăng xuất %>
+  <div class="flex justify-between items-start mb-8 py-6">
     <div>
-      <h1 class="font-bold text-4xl text-gray-900">Chi tiêu của tôi</h1>
-      <p class="text-gray-500 mt-2">Chào Trà My, hôm nay bạn đã chi gì chưa?</p>
+      <h1 class="font-black text-4xl text-gray-900 tracking-tight">Chi tiêu của tôi</h1>
+      <p class="text-gray-500 mt-1">Chào Trà My, hôm nay bạn đã chi gì chưa? ☕</p>
     </div>
-    <%= link_to "+ Thêm mới", new_transaction_path, class: "rounded-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-200 transition-all" %>
+    <div class="flex flex-col items-end gap-2">
+      <%= link_to "+ Thêm mới", new_transaction_path, class: "rounded-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-200 transition-all" %>
+      <%= button_to "Đăng xuất", destroy_user_session_path, method: :delete, class: "text-xs text-red-500 hover:underline" %>
+    </div>
   </div>
 
-  <%# Tổng chi tiêu %>
-  <div class="mb-10 bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-2xl text-white shadow-xl">
-    <p class="text-blue-100 text-sm uppercase tracking-wider font-semibold">Tổng chi tiêu đã ghi nhận</p>
-    <h2 class="text-4xl font-black mt-1">
-      <%= number_to_currency(@transactions.sum(:amount), unit: "₫", precision: 0, format: "%n %u") %>
-    </h2>
+  <%# Tổng chi tiêu Card %>
+  <div class="mb-10 bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
+    <div class="relative z-10">
+      <p class="text-indigo-100 text-sm uppercase tracking-widest font-bold opacity-80">Tổng chi tiêu đã ghi nhận</p>
+      <h2 class="text-5xl font-black mt-2 flex items-baseline">
+        <%= number_to_currency(@transactions.sum(:amount), unit: "₫", precision: 0, format: "%n %u") %>
+      </h2>
+    </div>
+    <%# Decor hình tròn mờ phía sau %>
+    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white opacity-10 rounded-full"></div>
   </div>
 
-  <%# BIỂU ĐỒ %>
-  <% if @transactions.any? %>
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-12">
-      <h2 class="text-xl font-bold mb-6 text-gray-800">Phân tích chi tiêu</h2>
-      <div class="h-64">
-        <%= pie_chart @transactions.group(:category).sum(:amount), 
-                      prefix: "đ", 
-                      thousands: ".", 
-                      donut: true,
-                      legend: "bottom",
-                      library: { animation: { duration: 1000 } } %>
+  <%# Grid chia 2 cột: Biểu đồ và Danh sách %>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <%# Cột biểu đồ (chiếm 2 phần) %>
+    <div class="lg:col-span-2">
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm sticky top-6">
+        <h2 class="text-lg font-bold mb-6 text-gray-800">Phân tích loại hình</h2>
+        <%= pie_chart @chart_data, 
+                      donut: true, 
+                      colors: ["#6366f1", "#f43f5e", "#10b981", "#f59e0b"],
+                      library: { animation: { duration: 800 } } %>
       </div>
     </div>
-  <% end %>
 
-  <%# DANH SÁCH GIAO DỊCH %>
-  <div id="transactions" class="space-y-4">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">Lịch sử giao dịch</h2>
-    <% if @transactions.any? %>
-      <div class="grid gap-4">
-        <% @transactions.order(transaction_date: :desc).each do |transaction| %>
-          <%= render transaction %>
+    <%# Cột danh sách (chiếm 3 phần) %>
+    <div class="lg:col-span-3">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800">Lịch sử giao dịch</h2>
+        <span class="text-sm bg-gray-100 px-3 py-1 rounded-full text-gray-500 font-medium">
+          <%= @transactions.count %> giao dịch
+        </span>
+      </div>
+
+      <div id="transactions" class="space-y-4">
+        <% if @transactions.any? %>
+          <% @transactions.each do |transaction| %>
+            <%= render transaction %>
+          <% end %>
+        <% else %>
+          <div class="text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+            <p class="text-gray-400">Chưa có dữ liệu nào ở đây...</p>
+          </div>
         <% end %>
       </div>
-    <% else %>
-      <div class="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-        <p class="text-gray-400 font-medium">Chưa có giao dịch nào. Nhấn "Thêm mới" để bắt đầu nhé!</p>
-      </div>
-    <% end %>
+    </div>
   </div>
 </div>

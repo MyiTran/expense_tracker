@@ -1,4 +1,5 @@
 class Transaction < ApplicationRecord
+    belongs_to :user
   enum category: { food: 0, transport: 1, shopping: 2, entertainment: 3, salary: 4, other: 5 }
 
   validates :title, :amount, :transaction_date, :category, presence: true
