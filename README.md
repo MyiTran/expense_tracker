@@ -6,7 +6,6 @@
 - **Authentication:** Bảo mật tài khoản với Gem Devise (Mỗi người dùng một không gian riêng).
 - **Interactive Dashboard:** Biểu đồ hình tròn (Chartkick) phân tích chi tiêu trực quan.
 - **Budget Management:** Hệ thống cảnh báo hạn mức chi tiêu thông minh (Progress Bar).
-- **Responsive UI:** Giao diện hiện đại với Tailwind CSS, tối ưu cho nhiều thiết bị.
 
 ## 🛠 Tech Stack & Tools
 - **Backend:** Ruby 3.3.0, Rails 7.2.3
