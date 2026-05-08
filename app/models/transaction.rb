@@ -3,7 +3,7 @@ class Transaction < ApplicationRecord
 
   validates :title, :amount, :transaction_date, :category, presence: true
 
-  #xử lý dữ liệu từ form
+  # xử lý dữ liệu từ form
   before_validation :cast_category_to_integer
 
   private
