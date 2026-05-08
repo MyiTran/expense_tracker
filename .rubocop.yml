@@ -1,5 +1,3 @@
-inherit_from: .rubocop.yml
-
 AllCops:
   SuggestExtensions: false
   NewCops: enable
@@ -9,13 +7,17 @@ AllCops:
     - 'config/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
-
-# Tắt các luật về độ dài dòng và chú thích tiếng Việt (để tránh lỗi layout)
-Layout/LineLength:
-  Enabled: false
+    - 'storage/**/*'
+    - 'tmp/**/*'
 
 Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/Documentation:
   Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Lint/Syntax:
+  Enabled: true
